@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: REST-API-SERVICE-HIERARCHY-MYSQL
+          uri: lb://REST-API-SERVICE-HIERARCHY-MYSQL
+          predicates:
+            - Path=/api/users/**
