@@ -5,4 +5,32 @@ spring:
         - id: REST-API-SERVICE-HIERARCHY-MYSQL
           uri: lb://REST-API-SERVICE-HIERARCHY-MYSQL
           predicates:
-            - Path=/api/users/**
+            - Path=/users/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: REST-API-SERVICE-HIERARCHY-MYSQL
+                fallbackuri: forward:/hierarchicalModelFallBack
+        - id: REST-API-TEXT-SERVICE-MYSQL
+          uri: lb://REST-API-TEXT-SERVICE-MYSQL
+          predicates:
+            - Path=/texts/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: REST-API-TEXT-SERVICE-MYSQL
+                fallbackuri: forward:/textServiceFallBack
+
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
